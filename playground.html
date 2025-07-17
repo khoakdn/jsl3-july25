@@ -1,0 +1,482 @@
+
+<!DOCTYPE html>
+<html lang="en" >
+	<head>
+		<meta charset="UTF-8">
+		<link rel="icon" href="./images/jsl3-logo.jpg" type="afbeelding/icoontype">
+		<link rel="stylesheet" href="console.css"/>
+		<link rel="stylesheet" href="jsl3doc.css"/>
+		<link rel="stylesheet" href="jsf.css"/>
+        <link rel="stylesheet" href="header-footer.css"/>
+		<script src="jsl3.1.js"></script>			
+		<script src="jsd1.1.js"></script>		
+		<script src="jsf2.1.js"></script>				
+		<script src="playground.js"></script>
+		<script src="console.js"></script>
+		<script src="lorem.js"></script>
+		<script src="domtree.js"></script>
+		<!-- <script src="jsl-search.js"></script> -->
+		<script>		
+			const sVoidSource=Symbol();
+			const typeIsObjectOrFunction={'object':true,'function':true};
+			function extractFnTitle(fn){//[title=extract the first single line comment like this one]
+				const s=fn.toString();
+				const c=s && /^(?:[^](?!\/\*))+\/\/(.*)/.exec(s);//[^] multiline .
+				const r=c && /\[title=((\\.|[^\]])*)\]/.exec(c[1]);
+				return r && jsl.rdata(r[1].replace(/\\/g,''));
+			};	
+
+			function formatJavadoc(doc,fn,visitLink){
+				if(!doc){
+					return;
+				}
+				doc=doc.toString();
+				//doc=unindentComments(doc);
+				doc=doc.replace(/^[\*\s\r\n]*/m,'');
+				doc=doc.replace(/\n\s*\*\s/g,'<br/>\n');
+
+				/*let fnDoc=fn[jsd];
+				if(fnDoc.raw.seeAlso){
+					Object.keys(fnDoc.raw.seeAlso).forEach( key=>{
+						doc+='\n @see '+key;
+					})
+				};*/
+				
+
+				const tokenRegEx=/(?:@([\w-]+)\s+([^\s]+))|(?:\{@([\w-]+)\s+([^\}]+)\})/;
+				let p=0,i=0,j=0;
+				let out=jsl.writer();
+				let prevTag;
+				for(let token; token=tokenRegEx.exec(doc.slice(p));){
+					//console.log(token);
+					out.raw(doc.slice(p,p+=token.index));
+					let tag=token[1]||token[3];
+					let val=token[2]||token[4];
+					let target=fn && (fn[jsd].uses[val]||fn[jsd].usedBy[val]||fn[jsd].seeAlso[val]||fn[jsd].examples[val]);
+					switch(tag){
+						case 'param'   	:							
+							if(target){
+								val=A({onclick(e){visitLink(target)}},val);
+							};
+							out.jsl.eof=[ (i++)?'':HR(), (prevTag==tag)?'':HEADER('Parameters:'), 
+								SPAN({class:'param'},val) 
+							];
+						break;
+						case 'return'  	:
+							out.jsl.eof=[ (i++)?'':HR(), (prevTag==tag)?'':HEADER('Returns:'), 
+								SPAN({class:'param return'})
+							];
+							p-=!val?0:val.length;
+						break;
+						case 'see'     	:
+							if(target){
+								val=A({onclick(e){
+									console.log('visiting',target);
+									//visitLink(target);
+									'article'.jsl.outer=makeTopicPage({[val]:target},val);
+								
+								}},val);
+							};						
+							out.jsl.eof=[ (i++)?'':HR(), (prevTag==tag)?'':HEADER('See also:'), 
+								SPAN({class:'see'},val)
+							];
+						break;
+						case 'link'		:
+							val=/^([^\s]+)(?:\s+(.+)){0,1}$/.exec(val).slice(1);
+							if(/^#/.test(val[0])){
+								out.jsl.eof=A({class:'link',href:val[0]},jsl.rdata(val[1]||val[0]));
+							}else
+							if(target){
+								out.jsl.eof=A({class:'link',onclick(e){
+									'article'.jsl.outer=makeTopicPage({[val]:target},jsl.rdata(val));
+								}},val);
+							}else{
+								out.jsl.eof=A({class:'link',href:val[0],target:'_blank'},jsl.rdata(val[1]||val[0]));
+							}							
+						break;
+						case 'note'		:
+							out.jsl.eof=[ (i++)?'':HR(), (prevTag==tag)?'':HEADER('Notes:'), 
+								SPAN({class:'footnote'},jsl.rdata(val))
+							];		
+						break;
+						default			:out.jsl.eof=SPAN({class:tag},'@',tag,' ',val);
+					};
+					prevTag=tag;
+					p+=token[0].length;
+				};				
+				out.raw(doc.slice(p));
+				//out.val=out.val.replace(/\t/g,'&Tab;');
+				return out;
+			}
+			
+			const extractFunctionDeclaration=(fn)=>{
+				let r=jsf.extractDeclaration(fn);
+				if(!r.startsWith('function')){
+					return 'function '+r;
+				}else{
+					return r;
+				}
+			};
+			var myCounter=1;
+			function makeTopicPage(root,member,nav){//
+				/**
+				*	Make a topic page from the jsl documentation.
+				*	@param	root	the root object. The topic in display is the root[member].
+				*	@param	member	a member of the root object. 
+				*	@param	nav		when true, a navigation bar is created enumerating all the members of the root.
+				*	@return	an article about the topic specified by root and member
+				*/
+				const topic=root[member];
+				const topicDoc=topic[jsd];
+				let c=0,topicSourceChanged=jsl.eventSource();
+				const sTabChanged=Symbol(), sDomChanged=Symbol(), sHeaderClicked=Symbol();
+				const topicIsVoid=jsf.extractIsVoidFunction(topic);
+				let examples=topicDoc.raw.examples || jsl.forEach(topicDoc.raw.defines, (subtopic,definedAs,collection,results)=>{
+					///console.log(member,'defines',definedAs,'=',subtopic);
+					if(subtopic)jsl.forEach(subtopic[jsd].raw.examples, (example,exampleName)=>{
+						if(example && example[jsd].flags.important!==false){
+							results[exampleName]=example;
+						};
+					},false);
+				},false);
+				return [
+				!nav?'':
+				NAV(//[title=build the navigation side-bar]
+					UL(
+						jsl.forEach(root,(navtopic,name)=>
+							LI(
+								A(extractFnTitle(navtopic)||name,{
+									onclick(e){
+										'body > main'.jsl=makeTopicPage(root,name,true);
+									}
+								}),
+								!((navtopic == topic)&&navtopic[jsd].raw.defines) ? '':
+								UL(
+									jsl.forEach(navtopic[jsd].defines,( subtopic, name )=>
+										LI(
+											A(extractFnTitle(subtopic)||name,{
+												onclick(e){
+													'article'.jsl.outer=makeTopicPage(navtopic[jsd].defines,name);
+												}
+											}),
+										)
+									)
+								)
+							)
+						,true)
+					)
+				),
+				ARTICLE(//[title=build the article for the selected topic]
+					H2(extractFnTitle(topic)||member),
+					DIV({class:'jdoc'},[//[title=documentation of the topic]
+						topicDoc.flags.ismodule || topicIsVoid?'':HEADER(extractFunctionDeclaration(topic)),
+						typeof topic!='function'?'':formatJavadoc(topic.jsl.RDATA,topic,topicSourceChanged),
+						topic.get && [HEADER(extractFnTitle(topic.get)||[I(member),' property getter']),formatJavadoc(jsl.rdata(topic.get),topic.get,topicSourceChanged)],
+						topic.set && [HEADER(extractFnTitle(topic.set)||[I(member),' property setter']),formatJavadoc(jsl.rdata(topic.set),topic.set,topicSourceChanged)],
+						topicIsVoid && !topic.get && !topic.set?'':
+						DIV({class:'source view collapsed'},[//[title=the topic has javascript source]
+							A('Under the hood',{onclick(e){this.parentElement.classList.toggle('collapsed')||topicSourceChanged(topic);}}),
+							CODE({class:'javascript-syntax'},
+								function(src,fn=topic){//[title=format the javascript source]							
+									return jsf.syntaxHighlight(fn,{skipDoc:fn==topic,showFunction:topicSourceChanged})
+								}.jsl.sinkFor(topicSourceChanged)
+							)
+						]),
+						!topic[jsd].raw.seeAlso?'':
+						FOOTER(//[title=build a footer with the relevant items]
+							HEADER('See also: '),
+							jsl.forEach(topic[jsd].raw.seeAlso, (relTopic,relTopicName,collection,results)=>(
+								[results.length?'| ':'',A(relTopicName,{onclick(){
+									'article'.jsl.outer=makeTopicPage(topic[jsd].raw.seeAlso,relTopicName);
+								}})]
+							))
+						)						
+					]),
+					examples && jsl.forEach(examples, (example,name)=>{//[title=enumerate the examples associated with the selected topic]
+						const codeModified=jsl.eventSource();
+						let modifiedCode=null;
+						return SECTION({class:'example',id:`topic_section_${(example.sectionId=myCounter++)}`},[//[title=A section for this example]
+							(example[sTabChanged]=jsl.eventSource())&&(example[sDomChanged]=jsl.eventSource())&&(example[sHeaderClicked]=jsl.eventSource())&&undefined,						
+							jsl.sinkFor(example[sTabChanged],example[sHeaderClicked],function(src,tab){
+								this.scrollIntoView({behavior: "smooth", block: "start"});
+							}),
+							H3(extractFnTitle(example)||name,{onclick:example[sHeaderClicked]}),
+							HEADER({class:'jdoc'},
+								formatJavadoc(example.jsl.RDATA,example)
+							),
+							MAIN({class:'example-container'},[//[title=Container of the JSL|HTML|DOM tabs]
+								DIV({class:'source tab selected'},
+									BUTTON(I('JSL',SUB(3)),{onclick(){example[sTabChanged]('source')}}),
+									DIV({class:'stage ready'},//[title=Display the example's source]
+										CODE({class:'source view javascript-syntax',contenteditable:true},
+											function oninput(e){
+												codeModified(modifiedCode=this.innerText);
+											},
+											jsf.syntaxHighlight(example,{skipDecl:1,skipDoc:1})
+											/*jsl.sinkFor(codeModified,null,(source,code=example)=>{
+												console.log("reformatting code",code);
+												return jsf.syntaxHighlight(typeof code=="string"?new Function(code):code,{skipDecl:1,skipDoc:1});
+											})*/
+										)
+									)
+								),	
+								DIV({class:'splitter'}),		
+								DIV({class:'html-dom',},
+									DIV({class:'html tab'},
+									BUTTON(DIV({class:'left'},'▶'),DIV({class:'right'},'HTML'),{onclick(){example[sTabChanged]('html')}}),
+									DIV({class:'stage ready'},
+										DIV({class:'html view'},
+											((src,x)=>x).jsl.sinkFor(example.reset),
+											jsl.sinkFor(example[sTabChanged],function(src,tab){//[title=Display the example's output]
+												if(tab!='html'){
+													return;
+												};
+												console.focusedExample=example;
+												this.parentElement.classList.toggle('ready',true);
+												let self=this;
+												example.observer=example.observer || new MutationObserver(function(mutations){
+													example[sDomChanged](self);
+												}).observe(this,{subtree: true, childList: true, attributes: true});
+												this.innerHTML='';
+												try{//[title=change the global jsl target to this div]
+													jsl.target=this;
+													with(this){
+														if(modifiedCode){
+															try{
+																new Function(modifiedCode)();
+															}catch(e){
+																this.jsl=e.message;
+															}
+														}else{
+															example();
+														}
+													}
+												}finally{//[title=reset the global jsl target]
+													jsl.target=null;
+												};
+											})
+										)
+									)
+								),
+								example[jsd].flags.nodom?'':
+								DIV({class:'dom tab'},
+									BUTTON(DIV({class:'left'},''),DIV({class:'right'},'DOM'),{onclick(){example[sTabChanged]('dom')}}),
+									DIV({class:'stage ready'},
+										DIV({class:'dom view'},
+											(function(src,root){//[title=sink for dom changed notification]
+												this.parentElement.classList.toggle('ready',root);
+												return root && BUILDDOMTREE({childNodes:root.childNodes,nodeType:Node.DOCUMENT_FRAGMENT_NODE})
+											}).jsl.sinkFor(example[sDomChanged]))
+									)
+								),
+								example[jsd].flags.console && 
+								DIV({class:'console tab'},
+									BUTTON('CONSOLE',{onclick(){example[sTabChanged]('console')}}),
+									DIV({class:'stage'},
+										DIV({class:'console view'},
+											jsl.sinkFor(console.methodCalled,function(src,type,args){
+												if(console.focusedExample==example){
+													this.parentElement.classList.toggle('ready',true);
+													if(type=='clear'){
+														this.jsl.clr();
+													}else{
+														this.jsl.eof=CONSOLELINE(type,args);
+													}
+												}
+											})
+										)
+									)
+								)
+								)
+							]),
+							FOOTER(//[title=build a footer with the relevant items]
+								!example[jsd].raw.seeAlso?'':[
+								EM('See also: '),
+									jsl.forEach(example[jsd].raw.seeAlso, (relTopic,relTopicName,collection,results)=>(
+										[results.length?'| ':'',A('#',relTopicName,{onclick(){
+											'article'.jsl.outer=makeTopicPage(example[jsd].raw.seeAlso,relTopicName);
+										}})]
+									))
+								],
+								example[jsd].flags.nodownload?'':
+								EM({style:{float:'right'}},A({href:'data:text/html;charset=utf-8,' + encodeURIComponent(
+									HTML(
+										jsl.rdata('\n\t'),
+										HEAD(
+											jsl.rdata('\n\t\t'),
+											SCRIPT({src:'http://jsl3.codemax.net/lorem.js'}),
+											jsl.rdata('\n\t\t'),
+											SCRIPT({src:'http://jsl3.codemax.net/jsl3.1.js'}),
+											jsl.rdata('\n\t\t'),
+											SCRIPT(nextID,jsl.rdata('\n\t\t')),
+											jsl.rdata('\n\t'),
+										),
+										jsl.rdata('\n\t'),
+										BODY(
+											jsl.rdata('\n\t\t'),
+											SCRIPT(jsl.rdata('\n\t\t'),'('+example+')()',jsl.rdata('\n\t\t')),
+											jsl.rdata('\n\t'),
+										),
+										jsl.rdata('\n')
+									)
+								),download:'example.html',class:'download',title:'Download this example as a standalone html page'},'Download'))								
+							)
+						])
+					}),
+				),
+			]
+			};
+			document.addEventListener("DOMContentLoaded", function () {
+			const splitter = document.querySelector(".splitter");
+			const sourceTab = document.querySelector(".source.tab");
+			const htmlDomTabs = document.querySelector(".html-dom");
+
+			let isDragging = false;
+
+			splitter.addEventListener("mousedown", function (event) {
+				isDragging = true;
+				document.body.style.cursor = "col-resize";
+			});
+
+			document.addEventListener("mousemove", function (event) {
+				if (!isDragging) return;
+
+				let newWidth = event.clientX - sourceTab.getBoundingClientRect().left;
+				sourceTab.style.width = `${newWidth}px`;
+				htmlDomTabs.style.flexGrow = "1";
+			});
+
+			document.addEventListener("mouseup", function () {
+				isDragging = false;
+				document.body.style.cursor = "default";
+			});
+		});
+
+		</script>
+	</head>
+	<body>
+		<script>
+			// jsl.outer=HEADER({
+			// 		class:'auto-hide-header',tabindex:0,autofocus:true,
+			// 		onblur(e){this.classList.toggle('collapsed',true)},
+			// 		onclick(e){this.classList.toggle('collapsed')},					
+			// 	},//jsl.sinkFor(window.onscroll=jsl.eventSource(),function(){this.classList.toggle('collapsed',true);}),
+			// 	DIV({class:'background center'},			
+			// 		jsl.cdata(function(){/**
+			// 		*	jsl=UL(
+			// 		*		jsl.sinkFor(messagesReceived,null,function*(eventSource,receivedMessages = messages){
+			// 		*			if(eventSource===messagesReceived){
+			// 		*				this.jsl.before=H3(messagesReceived.length,' new messages');
+			// 		*			}else{
+			// 		*				console.assert(eventSource===null);
+			// 		*			};
+			// 		*			for(let i=0;i<receivedMessages.length;i++){
+			// 		*				this.jsl.eof=LI(message);
+			// 		*				yield;
+			// 		*			}									
+			// 		*		})
+			// 		*	);					
+			// 		*/},true)
+			// 	),				
+			// 	DIV({class:'background left'},
+			// 		jsl.cdata(function(){/**
+			// 		*	let pizzaList=['Margherita','Pepperoni','Quattro formaggi'];
+			// 		*	jsl=FORM({method:'POST'},
+			// 		*		FIELDSET(LEGEND('Pizza'),
+			// 		*			pizzaList.map( type =>[
+			// 		*				LABEL(type,
+			// 		*					INPUT({type:'radio',name:'type',value:type.toLowerCase()}),
+			// 		*				),BR()
+			// 		*			])
+			// 		*		),
+			// 		*		LABEL(
+			// 		*			INPUT({type:'checkbox'}),'extra mozarella'
+			// 		*		),HR(),
+			// 		*		INPUT({type:'reset'}),' ',INPUT({type:'submit',disabled:true}),
+			// 		*	);					
+			// 		*/},true)
+			// 	),
+			// 	DIV({class:'background right'},
+			// 		jsl.cdata(function(){/**
+			// 			*	response.jsl.serial
+			// 			*	.DIV({class:['my-div-class','container'],title:'serial output'})
+			// 			*		.H3().txt('Serial output demo').$H3
+			// 			*		.UL()
+			// 			*			.all([1,2,3],function(x){
+			// 			*				this.LI().txt('list item #'+x).$LI;
+			// 			*			})
+			// 			*		.$UL
+			// 			*		.FORM({onsubmit(e){e.preventDefault()}})
+			// 			*				.INPUT({type:'password'})
+			// 			*				.INPUT({type:'submit'})
+			// 			*		.$FORM
+			// 			*	.$DIV
+			// 			*	.end();					
+			// 			*/},true)
+			// 	),
+			// 	DIV({class:'about'},
+			// 		H1('JSL',SUB(3),SUP({style:'font-size:50%'},'The native javascript templating framework for web applications')),
+			// 		DIV({style:{maxWidth:'fit-content',textAlign:'justify'}},
+			// 			jsl.rdata(function(){/*
+			// 				<p>JSL exploits the syntactic elegance of JavaScript and the power of modern JavaScript engines to
+			// 				produce HTML content either on the front-end or the back-end of your application.</p>
+			// 				<p>Model-View notifications, asynchronous content generation, multiple insert-modes, 
+			// 				server-side serial output for chunked transfers, javascript expression based or builder pattern based syntax, 
+			// 				are some of the new JSL features, combined with screaming speeds, minimal footprint, and optimized resource usage</p> 
+			// 				<p>Jsl offers full compatibility with in-browser debuggers, and renders obsolete production builds.</p>*/})
+			// 		)
+			// 	),
+			// 	DIV({class:'cover'})
+			// )
+		</script>
+        <script type="module">
+            import {DEFHEADER} from "./header-footer.js";
+            const jslHashChange=jsl.eventSource();        
+
+        
+            'body'.jsl.eof = [ 
+                DEFHEADER(BUTTON('XXXXXX')),
+				MAIN(),
+                FOOTER({class: 'footer'},
+                    P('© 2020 Ambianti B.V.'),
+                ),
+            ];
+
+			window.addEventListener('hashchange',(e)=>{
+                jslHashChange(location.hash.substr(1))
+            });		
+       
+			console.methodCalled=jsl.eventSource();
+			['log','info','error','clear'].map(methodName=>{
+				const method=console[methodName];
+				console[methodName]=function(...args){
+					method.apply(console,args);
+					console.methodCalled(methodName,args);
+				};
+			});
+			let topics=['/'];
+			function myShowTopic(topic,nopush){
+				nopush || history.pushState({id:topics.push(topic)-1},'#');
+				document.body.jsl=makeHelpTopic.call(topic.item,topic.path,topic.name,myShowTopic,(f)=>CODE(jsl.directives.noTextEscape(),formatjs(f)));
+			};
+			window.onpopstate=function(e){
+				console.log('window.onpopstate:',e.state);
+				if(e.state && e.state.id){
+					let topic=topics[e.state.id];
+					myShowTopic(topic,true);
+				}
+			};
+						
+			'body > main'.jsl.outer=MAIN(makeTopicPage(jslHelp,'Playground',true));//jsl.outer will replace the script with the fragment
+		</script>	  
+		<script>
+			jsl.outer=undefined && FOOTER({class:'console-container'},
+				function ondblclick(e){
+					this.classList.toggle('maximized');
+				},
+				CONSOLE()
+			);
+		</script>
+		
+	</body>
+</html>

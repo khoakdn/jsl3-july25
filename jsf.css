@@ -1,0 +1,207 @@
+code.javascript-syntax{
+	font-family	:monospace;				
+	display		:inline-block; 
+	white-space	:pre; 
+	position	:relative; 
+	padding-left:4em;				
+	line-height	:1.6em;
+}
+code.javascript-syntax a {
+	color: inherit;
+	text-decoration: none;
+}
+code.javascript-syntax a:hover {
+	text-decoration: underline;
+}
+code.javascript-syntax::before {
+	height	: 100%;
+	content	: '';
+	position: absolute;
+	width	: 3.5em;
+	left	: 0;
+	top		: 0;
+}
+code.javascript-syntax em[data-line]{
+	position:relative;
+	display:block;				
+}
+code.javascript-syntax em[data-line]::before{
+	position:absolute;
+	content :attr(data-line);
+	margin-left: -4em;
+	width: 3em;
+	text-align: right;				
+}
+
+code.javascript-syntax em.tab {
+	width	: 4ch;
+	display	: inline-block;
+	overflow: hidden;
+}		
+
+code.javascript-syntax .block.collapsed:not(:target) >.block-source{
+	display:none;
+}
+code.javascript-syntax .block.multiline > .block-begin{
+	cursor		: pointer;	
+}
+code.javascript-syntax .block.multiline > .block-begin::after{
+	content		: '\025c2'  attr(title) ;
+	text-align	: left; 
+	cursor		: pointer;	
+}			
+
+code.javascript-syntax .block.collapsed:not(:target) >.block-begin::after{
+	content: attr(title) '\02026';
+}
+
+code.javascript-syntax .ident > a {
+	position: relative;
+	text-decoration: none;
+}
+code.javascript-syntax .ident > a:hover {
+	text-decoration: underline;
+}
+
+code.javascript-syntax .ident > a > .tooltip {
+	display	: none;
+}
+
+code.javascript-syntax .ident > a:hover > .tooltip {
+	display	: block;
+	position: absolute;
+	background-color: white;
+	padding	: 1em;
+	border-radius: 1ch;
+	z-index	: 10;
+	color	: black;
+	left	: 0em;
+	white-space: pre-line;
+	min-width: 40vw;
+	max-height: 10em;
+	overflow-y: auto;				
+}			
+
+/*color scheme*/
+code.javascript-syntax{
+	background-color: hsl(270,5%,20%);
+	font-family: 'courier new', monospace;
+	font-size: 10pt;
+	vertical-align: middle;
+	color: hsl(0,0%,80%);	
+	padding:1em 2em 2em 4em;				
+}
+
+code.javascript-syntax::before {
+	background-color: hsl(270,5%,30%);
+	border-right: 1px solid gray;
+}	
+code.javascript-syntax > br:first-child{
+	display:none;
+}
+
+.block.multiline{
+	position: relative;
+}
+
+.block.multiline::after {
+	content	: ' ';
+	position: absolute;
+	display	: block;
+	height	: 100%;
+	top		: 0;
+	border-left: 1px dotted hsl(270,5%,35%);	
+}
+.block.multiline[data-depth= '1']::after {margin-left: 0ch;}
+.block.multiline[data-depth= '2']::after {margin-left: 1ch;}
+.block.multiline[data-depth= '3']::after {margin-left: 2ch;}
+.block.multiline[data-depth= '4']::after {margin-left: 3ch;}
+.block.multiline[data-depth= '5']::after {margin-left: 4ch;}
+.block.multiline[data-depth= '6']::after {margin-left: 5ch;}
+.block.multiline[data-depth= '7']::after {margin-left: 6ch;}
+.block.multiline[data-depth= '8']::after {margin-left: 7ch;}
+.block.multiline[data-depth= '9']::after {margin-left: 8ch;}
+.block.multiline[data-depth='10']::after {margin-left: 9ch;}
+.block.multiline[data-depth='11']::after {margin-left:10ch;}
+.block.multiline[data-depth='12']::after {margin-left:11ch;}
+.block.multiline[data-depth='13']::after {margin-left:12ch;}
+.block.multiline[data-depth='14']::after {margin-left:13ch;}
+.block.multiline[data-depth='15']::after {margin-left:14ch;}
+.block.multiline[data-depth='16']::after {margin-left:15ch;}
+.block.multiline[data-depth='17']::after {margin-left:16ch;}
+.block.multiline[data-depth='18']::after {margin-left:17ch;}
+
+
+
+code.javascript-syntax em.block-begin, code.javascript-syntax em.block-end {
+	color: hsl(30,100%,40%);
+	font-size: 125%;
+}			
+code.javascript-syntax em.block-begin::after{
+	font-size: 80%;
+	color: hsl(60,80%,60%);					
+}
+code.javascript-syntax .block.collapsed:not(:target) > em.block-begin::after{
+	/*color:#868cff;*/
+}
+
+code.javascript-syntax em.reserved {
+	color: hsl(30,100%,65%);
+}
+code.javascript-syntax em.ident {
+	color: hsl(210,98%,77%);
+}		
+code.javascript-syntax em.ident.buildin {
+	color: hsl(270,85%,82%);
+}
+code.javascript-syntax .comment {
+	font-style: italic;
+	color: hsl(0,0%,75%);
+}			
+code.javascript-syntax em.string {
+	color: hsl(90,60%,50%);
+}
+code.javascript-syntax em.number {
+	color: hsl(0,65%,75%);
+}
+code.javascript-syntax .regexp {
+	color: hsl(345,100%,75%);
+}
+
+/*javadoc colors*/
+code.javascript-syntax .comment.multiline.doc{
+	font-family	:Segoe UI,Roboto,sans-serif;
+	font-size	:110%;
+	display		: inline-block;
+	padding		: 1em;
+	white-space: pre;
+	margin		:0.4em;
+	color		:white;
+	border-radius: 0.5em;
+	background-color: hsla(270, 5%, 30%, 1);
+	font-style: normal;
+}
+
+code.javascript-syntax .comment.multiline.doc .comment-begin,code.javascript-syntax .comment.multiline.doc .comment-end{
+	display:none;
+}
+code.javascript-syntax .comment.multiline.doc hr{
+	border:none;
+	border-top:1px dotted white;
+	margin: .8em auto;
+}
+
+code.javascript-syntax .comment.multiline.doc .param{
+	display		:inline-block;
+	min-width	:8em;
+	font-style	:italic;
+	font-weight	:bold;
+}
+code.javascript-syntax .comment.multiline.doc .param:after{
+	content: ':';
+}
+code.javascript-syntax .comment.multiline.doc a{
+	font:inherit;
+	color:hsl(232,71%,73%);
+	text-decoration:none;
+}	

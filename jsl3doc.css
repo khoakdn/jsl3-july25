@@ -1,0 +1,567 @@
+.auto-hide-header{
+	background-color: hsl(270,5%,25%);
+	color		: white;
+	padding		: 1em;
+	max-height	: 20em;
+	transition	: max-height 0.5s;
+	overflow	: hidden;
+	-position	: relative;
+	position	: fixed;
+	top:0;left:0;right:0;
+	opacity	: 0.98;
+	z-index	: 1000;
+}
+.auto-hide-header:focus{
+	outline:none;
+}
+.auto-hide-header.collapsed{
+	max-height:4pt;
+}
+/*.auto-hide-header::after {
+    content: ' ';
+    position: fixed;
+    left: 0;
+    right: 0;
+    background-color: hsl(270,5%,25%);
+    opacity: 0.8;
+    height: 100vh;
+	transition	: height 0.5s;
+}
+.auto-hide-header.collapsed::after {
+	height: 0vh;
+}*/
+.auto-hide-header .about {
+	margin		: auto;
+	max-width 	: 80ch;	
+	margin-top	: 0;
+	transition	: margin-top 0.7s;	
+}
+.auto-hide-header.collapsed .about {
+    color: silver;
+}
+.auto-hide-header .about h1{
+	margin-top	: 0;
+}
+.auto-hide-header .about p{
+	text-indent: 4ch;
+}
+.auto-hide-header.collapsed .about {
+	margin-top: -16pt;
+}	
+.auto-hide-header .background {
+    font-family: monospace;
+    white-space: pre;
+    position: absolute;
+	transform: rotate(-5deg);
+	transform-origin: center;	
+	user-select: none;	
+}
+.auto-hide-header .background.left{	
+	transform: rotate(-5deg) translateX(1em);
+    left: 0;   
+	opacity: 0.2;	
+}
+.auto-hide-header .background.center{	
+	transform: translateX(-50%) rotate(-30deg);
+    left: 50%;
+	opacity: 0.1;    
+}
+.auto-hide-header .background.right{	
+	transform: rotate(-10deg);
+    right: 0;  
+	opacity: 0.3;	
+}
+
+body{
+	margin:0;
+	height: 100vh;
+	display: flex;
+	overflow: hidden;
+}
+.topic {
+	font-family: sans-serif;
+	font-weight: 100;
+}
+
+a{
+	cursor: pointer;
+}
+
+a.topic-link {
+	color: #474745;
+	cursor: pointer;
+}
+
+a.topic-link:hover {
+	text-decoration: underline;
+}	
+
+a.download{
+	color		: white;
+	font-style	: normal;
+	font-size	: 80%;
+	text-decoration:none;
+	background-color: #ed0c7d;
+	border-radius: 5rem;
+	padding-left: 1rem;
+	padding-right: 1rem;
+	padding: 8px;
+}
+a.download:hover {
+	background-color: white;
+	color: #ed0c7d;
+	transition: 0.5s;
+	border: 2px solid #ed0c7d;
+}	
+
+article{
+	-width:60%;
+	font-family: Segoe UI,Roboto,sans-serif;
+}
+
+.example-container{
+	display: flex;
+	align-items: stretch;
+}
+
+.example-container > .tab {
+	flex-grow  : 1;
+	flex-shrink: 100;
+	flex-basis : max-content;
+	min-width  : 5ch;
+	transition : flex-grow 1s, flex-shrink 1s;
+	-overflow: hidden;
+}
+
+.example-container > .source.tab{
+	background-color:  hsl(270,5%,20%);
+}			
+.example-container > .html.tab{
+	background-color:  hsl(270,5%,25%); 
+}
+.example-container > .dom.tab{
+	background-color:  hsl(270,5%,30%); 
+}			
+.example-container > .console.tab{
+	background-color:  hsl(270,5%,30%); 
+}			
+
+
+.example-container > .tab {
+	flex-grow  : 1;
+	flex-shrink: 1;
+}
+
+.example-container > .source.tab{
+	flex-grow  : 100;
+}
+
+.example-container > .tab > .stage.ready {
+	overflow-y: hidden;
+	height	: calc( 100% - 24pt);
+}
+
+.example-container > .tab:not(.source) > .stage.ready {
+	background-color: white;
+}
+
+.example-container > .tab > button{
+	display		: block;
+	width		: 100%;	
+	height		: 24pt;
+	font-family	: inherit;
+	border		: none;
+	background-color: hsl(330,90%,46%);	
+	color		: white;
+	cursor		: pointer;
+	white-space	: nowrap;
+	text-align	: left;
+}
+.example-container > .tab > button:focus{
+	outline:none;
+}
+.example-container > .tab.selected > button{
+	background-color: hsl(330,90%,49%);	
+}
+		
+.source.view{
+	padding-bottom:2em;
+	width	: 100%;
+	height	: 100%;
+}	
+
+.source.view.javascript-syntax {
+    overflow: auto; /* Ensures scrollbars appear only when needed */
+    max-height: 100%; /* Adjust based on parent container */
+    display: block;
+}
+
+.example-container {
+    display: flex;
+}
+
+.source.tab.selected,
+.html-dom {
+    min-width: 0; /* Prevents content overflow */
+}
+
+
+
+
+.html.view, .dom.view, .console.view {
+	padding	: 1em;
+	width	: max-content;
+}
+
+.html.view fieldset {
+	border: 1px solid;
+}
+.html.view button{
+	min-width: 10ch;
+}
+.html.view label {
+	display	 : inline-block;
+	min-width: 10ch;
+}
+.html.view hr {
+	border-style: solid;
+	border-bottom: none;
+	margin: 1em 0em;
+}
+.html.view a {
+	text-decoration: underline;
+	cursor	: pointer;
+}
+
+/*	some global styling*/
+body {
+	font-family: Segoe UI,Roboto,sans-serif;
+}
+body > main{
+	display		: flex;
+	margin-top	: 5em;
+	margin-left: 3.5rem;
+	margin-right: 1.5rem;
+	overflow: hidden;
+	flex-direction: row;
+	/* margin-block-end: 1em; */
+}
+nav{
+	flex-basis	: auto;				
+	flex-shrink	: 0;
+	flex-grow	: 1;
+	overflow-y: auto;
+}
+nav::-webkit-scrollbar{
+	display: none;
+}
+@media (max-width: 1024px) { 
+	nav{
+		position: absolute;
+		height	: 24pt;
+		overflow: hidden;
+		top		: 0;
+		z-index	: 2000;
+	}
+	nav::before{
+		content		: '\02261';
+		font-size	: 24pt;
+		line-height	: 24pt;
+		color		: white;
+		display		: block;
+	}
+	nav:hover{
+		background	: white;
+		outline		: 1px solid;
+		height		: auto;
+		z-index		: 2000;
+	}
+}
+
+nav ul {
+	margin-block-start: 1em;
+	margin-block-end: 1em;
+	padding-inline-start: 1ch;
+	padding-inline-end: 3ch;
+}
+
+nav ul li {
+	list-style	: none;
+	margin-block-start: 1em;
+	font-size	: 1.1em;
+	font-weight	: 100;
+	cursor		: pointer;
+}	
+
+article {
+	color: #4d4950;
+	margin-block-start:1em;
+	margin-inline-start:1em;
+	margin-inline-end:1em;
+	overflow-x	: auto;
+	flex-basis	: auto;
+	flex-shrink	: 1;
+	flex-grow	: 10;
+}
+
+article::-webkit-scrollbar{
+	display: none;
+}
+article > .jdoc {
+	background-color: #ed0c7d;
+	padding: 2em;
+	padding-inline-start: 3em;
+	color: white;
+}
+article > .jdoc a{
+	color: inherit;
+}
+article > h2 {
+	color: #ed0c7d;
+	margin-block-start:0;
+	font-weight: 600;
+	font-size	:1.8em;
+}
+
+
+
+.jdoc p > br, .jdoc ul > br, .jdoc p + br, .jdoc ul + br, .jdoc pre + br, .jdoc > * > br:first-child, .jdoc > * > br:last-child{
+	display: none;
+}	
+.jdoc hr{
+	border		: none;
+	border-top	: 1px solid white;					
+}
+.jdoc a.link {
+	font-weight	: 600;
+	font-style	: italic;
+	cursor		: pointer;
+	color		: inherit;
+}
+.jdoc header{
+	font-weight: 600;
+	margin-inline-start: -1em;
+}
+.jdoc .param {
+	font-style	: italic;
+	min-width	: 16ch;
+	display		: inline-block;
+	position	:relative;
+	vertical-align: text-top;
+}
+.jdoc .param:after{
+	content :':';
+	position:absolute;
+	right   :1ch;
+} 
+.jdoc > .source.view{
+	padding	: 0;
+	margin-block-start: 1em;	
+	width	: 100%;
+}
+.jdoc > .source.view > a{
+	display		: block;		
+	cursor		: pointer;
+	font-size	: 80%;
+	font-weight	: 400;
+	text-align	: right;
+}
+.jdoc > .source.view > code.javascript-syntax{
+	display: block;
+	overflow-x: auto;
+}
+.jdoc > .source.view.collapsed > code.javascript-syntax{
+	display: none;
+}
+
+section.example {
+	padding-block-start: 1em;
+}	
+section.example > footer::after {
+    content: '';
+    display: block;
+    clear: both;
+    height: 2em;
+}
+section.example > h3 {
+	margin:0;
+	font-weight	:300;
+	font-size	:1.5em;				
+}	
+/* section.example > h3:before{
+	content		:	'\025B8';
+} */
+
+section.example .jdoc {
+	color: #380b34;
+	background-color: #f2eef0;
+	padding: 1em;
+}	
+
+.example > footer > em{
+	font-weight	: 500;
+	margin-top: 20px;
+}
+.example > footer > a{
+	font-style	: italic;
+	cursor		: pointer;
+}
+.example > footer > a:hover{
+	text-decoration	: underline;
+}
+
+/**/
+
+.console-container{
+	position:fixed;
+	bottom	:0;
+	left	:1ch;
+	right	:1ch;
+	max-height:6em;
+	overflow:auto;
+	z-index:1000;
+	background-color:white;
+}
+.console-container.maximized{
+	max-height:50%;
+}
+.console-container:before{/* > .title{*/
+	content : 'Console';
+	position: sticky;
+	z-index	: 1001;
+	display	: block;
+	background-color:#f8fefe;
+	border-bottom	:1px solid silver;	
+	left	: 0;
+	top 	: 0;
+	right	: 0;
+	text-align: center;
+}
+
+/* On this page */
+
+.aside {
+    margin: 1em 0; /* Add margin for spacing */
+	font-size: 10px;
+}
+
+.aside ul {
+    list-style-type: none; /* Remove default bullet points */
+    padding: 0; /* Remove padding */
+}
+
+.aside li {
+    margin: 0.5em 0; /* Add some margin between list items */
+    display: block; /* Ensure each list item is a block */
+}
+
+/* HTML-DOM */
+
+.html-dom {
+	display: flow;
+	align-items: stretch;
+}
+
+.html-dom > .tab {
+	flex-grow  : 1;
+	flex-shrink: 100;
+	flex-basis : max-content;
+	min-width  : 5ch;
+	transition : flex-grow 1s, flex-shrink 1s;
+	-overflow: hidden;
+}
+
+.html-dom > .source.tab{
+	background-color:  hsl(270,5%,20%);
+}			
+
+.html-dom > .tab. {
+	flex-grow  : 1;
+	flex-shrink: 1;
+}
+
+.html-dom > .source.tab{
+	flex-grow  : 100;
+}
+
+.html-dom > .tab > .stage.ready {
+	overflow-x: auto;/*edge doesn't understand overflow:auto hidden !*/
+	overflow-y: hidden;
+	height	: calc( 100% - 24pt);
+}
+
+.html-dom > .tab:not(.source) > .stage.ready {
+	background-color: white;
+}
+
+.html-dom > .tab > button{
+	display		: flex;
+	justify-content: space-between;
+	width		: 100%;	
+	height		: 24pt;
+	font-family	: inherit;
+	border		: none;
+	background-color: hsl(330,90%,46%);	
+	color		: white;
+	cursor		: pointer;
+	white-space	: nowrap;
+	align-items: center;
+}
+.html-dom > .tab > button:focus{
+	outline: none;
+}
+.html-dom > .tab > button{
+	background-color: hsl(330,90%,49%);	
+}
+
+
+.aside{
+	width: 3;
+}
+
+.aside ul{
+	color: #ed0c7d;
+	font-weight: 300;
+}
+
+.aside li a{
+	font-weight: 200;
+}
+
+.aside li a:hover{
+	color: #ed0c7d;
+}
+
+.aside li a:active{
+	color: #ed0c7d;
+}	
+
+
+.example-container {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    height: 100%;
+}
+
+.source.tab {
+    min-width: 20%;
+    max-width: 80%;
+    overflow: auto;
+}
+
+.resizer {
+    width: 5px;
+    cursor: col-resize;
+    transition: background 0.2s;
+}
+
+.resizer:hover {
+    background: hsl(330,90%,49%);
+}
+
+.html-dom {
+    flex: 1;
+    overflow: auto;
+}
+

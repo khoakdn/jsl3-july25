@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./images/jsl3-logo.jpg" type="afbeelding/icoontype">
+    <link rel="stylesheet" href="console.css"/>
+    <link rel="stylesheet" href="jsl3doc.css"/>
+    <link rel="stylesheet" href="jsf.css"/>
+    <link rel="stylesheet" href="header-footer.css"/>
+    <script src="jsl3.1.js"></script>			
+    <script src="jsd1.1.js"></script>		
+    <script src="jsf2.1.js"></script>				
+    <script src="jsldoc.js"></script>
+    <script src="console.js"></script>
+    <script src="lorem.js"></script>
+    <script src="domtree.js"></script>
+    <link rel="stylesheet" href="docs.html"/>
+    <title>JSL3</title>
+</head>
+<body>
+
+<!-- Load JSL library -->
+<SCRIPT src="lorem.js"></SCRIPT>
+<SCRIPT src="jsl3.1.js"></SCRIPT>
+
+<script type="module" defer>
+    import {DEFHEADER} from "./header-footer.js";
+    const jslHashChange=jsl.eventSource();
+
+    window.addEventListener('hashchange',(e)=>{
+        jslHashChange(location.hash.substr(1))
+    });
+
+    'body'.jsl.eof = [ 
+        DEFHEADER(BUTTON('XXXXXX')),
+        jsl = DIV({class: 'main-content'},
+        IMG({src: './images/jsl3-logo.jpg', alt: 'Logo', class: 'logo'}),
+        DIV({class: 'tag'},
+            A('JSL',SUB(3)),
+            P('The native JavaScript templating framework for fast, efficient web applications.')
+        ),
+        DIV({class: 'button-container'},
+            BUTTON({class: 'btn-primary', onclick: "window.location.href='docs.html'"}, 'Learn JSL',), 
+            // BUTTON({class: 'btn-secondary', onclick: "window.location.href='docs.html'"}, 'Why JSL?')
+        )
+    ),
+        FOOTER({class: 'footer'},
+            P('© 2020 Ambianti B.V.'),
+        )
+    ];
+</script>
+
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    a {
+        color: #708090;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: #ED1E79;
+    }
+
+    a.active{
+        color: #ED1E79;
+    }
+
+    .content-container {
+        display: flex;
+        flex: 1;
+        padding-right: 60px;
+    }
+
+    .menu {
+        width: 750px; 
+        padding: 1em;
+        border-right: 1px solid #ccc;
+        text-decoration: none;
+        list-style: none;
+        text-decoration: none;
+    }
+
+    .article {
+        display: flex;
+    }
+
+    .sidebar{
+        display: grid;
+    }
+
+    .menu-li {
+        text-decoration: none;
+        color: #ED1E79;
+        margin-bottom: 20px;
+    }
+    .menu-ui{
+        text-decoration: none;
+        list-style: none;
+        padding: auto;
+        margin: auto;
+    }
+
+    .main-content {
+        text-align: center;
+        margin-top: 2em;
+        padding: 118px ;
+        height: 100%;
+    }
+
+    .logo {
+        width: 125px;
+        height: auto;
+        margin-bottom: 20px;
+    }
+
+    .tag p{
+        font-size: 1.2rem;
+        color: #708090;
+    }
+
+    .tag a{
+        font-size: 2rem;
+        font-weight: 600;
+        letter-spacing: 3px;
+    }
+
+    .button-container {
+        margin-top: 1em;
+    }
+
+    .btn-primary, .btn-secondary {
+        padding: 0.75em 1.5em;
+        margin: 0.5em;
+        font-size: 1em;
+        cursor: pointer;
+        border: none;
+        border-radius: 4px;
+    }
+
+    .btn-primary {
+            background-color: #ED1E79;
+            color: white;
+        }
+
+    .btn-primary:hover {
+        background-color: white;
+        color: #ED1E79;
+        border: 2px solid #ED1E79;
+        transition: 0.2s;
+    }
+
+    .btn-secondary {
+        background-color: #708090;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background-color: white;
+        color: #708090;
+        border: 2px solid #708090;
+        transition: 0.2s;
+    }
+    
+    .content {
+        flex: 1;
+        padding: 2em;
+        overflow-y: auto;
+    }
+
+    .content h1 {
+        margin-top: auto;
+        font-size: 2em;
+        margin-bottom: 0.5em;
+    }
+
+    .content h2 {
+        margin-top: 1.5em;
+        color: #ED1E79;
+    }
+
+    .example {
+        background-color: #f9f9f9;
+        padding: 1em;
+        margin: 1em 0;
+        border-left: 4px solid #ED1E79;
+        font-family: monospace;
+    }
+
+    .menu#MENU_2{
+        text-decoration: none;
+        list-style: none;
+    }
+
+    /* Footer styling */
+    .footer {
+        background-color: white;
+        color: #708090;
+        text-align: center;
+        padding: 10px;
+        bottom: 0;
+        border-top: groove;
+        display:flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .footer img{
+        max-width: 30px;
+    }
+
+    .footer p{
+        margin: 0 20px;
+    }
+
+    .footer a {
+        color: #708090;
+        margin: 0 20px;
+        text-decoration: none;
+    }
+        
+    .footer a:hover {
+        color: #ED1E79;
+    }
+</style>
+</body>
+</html>

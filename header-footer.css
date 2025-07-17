@@ -1,0 +1,244 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    color: #708090;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #ED1E79;
+    transition: 0.5s;
+}
+a.active{
+    color: #ED1E79;
+}
+
+.content-container {
+    display: flex;
+    flex: 1;
+    padding-right: 60px;
+    padding-top: 80px;
+}
+
+.menu {
+    width: 750px; 
+    padding: 1em;
+    border-right: 1px solid #ccc;
+    text-decoration: none;
+    list-style: none;
+    text-decoration: none;
+}
+
+.article {
+    display: flex;
+}
+
+.sidebar{
+    display: grid;
+}
+
+.menu-li {
+    text-decoration: none;
+    color: #ED1E79;
+    margin-bottom: 20px;
+}
+.menu-ui{
+    text-decoration: none;
+    list-style: none;
+    padding: auto;
+    margin: auto;
+}
+
+.navbar {
+    background-color: white;
+    color: #708090;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: groove;
+    padding-left: 60px;
+    padding-right: 60px;
+    position: fixed;
+    top: 0;
+    width: 95%;
+    overflow: visible; 
+    z-index: 1;
+}
+
+.navbar-logo{
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+}
+
+.navbar-logo img{
+    max-width: 40px;
+    margin-right:10px;
+    margin-left: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.navbar h1 {
+    position: absolute; 
+    left: 1em;
+}
+
+.navbar input {
+    padding: 0.5em;
+    margin-right: 0.5em;
+    width: 1;
+    width: 100%;
+    max-width: 60ch;
+}
+
+.navbar-content {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+}
+
+.navbar-content .logo {
+    position: absolute; 
+    left: 1em;
+}
+
+.navbar-links{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: -30px;
+}
+
+.navbar-links a {
+    margin-right: 60px; /* Add space between navbar links */
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.navbar-links a.docs {
+    color: #ED1E79; /* This is the hover color */
+}
+
+.navbar-links a.docs:hover,
+.navbar-links a.docs:active {
+    color: #ED1E79; /* Keep the hover color when clicked */
+}
+
+.navbar-links img{
+    max-width: 20px;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.content {
+    flex: 1;
+    padding: 2em;
+    overflow-y: auto;
+    width: 1000px;
+}
+
+.content h1 {
+    margin-top: auto;
+    font-size: 2em;
+    margin-bottom: 0.5em;
+    color: #ED1E79;
+}
+
+.content h2 {
+    margin-top: 1.5em;
+    color: #708090;
+}
+
+.example {
+    background-color: #f9f9f9;
+    padding: 1em;
+    margin: 1em 0;
+    border-left: 4px solid #ED1E79;
+    font-family: monospace;
+}
+
+.menu#MENU_2{
+    text-decoration: none;
+    list-style: none;
+}
+
+/* Footer styling */
+.footer {
+    background-color: white;
+    color: #708090;
+    text-align: center;
+    padding: 10px;
+    bottom: 0;
+    border-top: groove;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer img{
+    max-width: 30px;
+}
+
+.footer p{
+    margin: 0 20px;
+}
+
+.footer a {
+    color: #708090;
+    margin: 0 20px;
+    text-decoration: none;
+}
+    
+.footer a:hover {
+    color: #ED1E79;
+}
+
+#searchResultsList {
+    position: absolute;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow:auto;
+    background-color: white;
+    margin: auto 2em;
+}
+
+#searchResultsList li {
+    padding: 8px;
+    cursor: pointer;
+    border-bottom: 1px solid #c4cad1;
+}
+
+#searchResultsList li:hover {
+    background-color: #f9f9f9;
+}
+
+.highlight {
+    background-color: #ED1E79;
+    color: white;
+    font-weight: bold;
+}
+
+.searchbox{
+    visibility: hidden;
+    position: relative;
+    background-color: white;
+    flex-basis:60ch;
+    flex-shrink: 1;
+    margin: auto 4em;
+}
+
+body.docs .searchbox{
+    visibility: visible;
+}

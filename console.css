@@ -1,0 +1,96 @@
+.console .line{
+	borderTop	:1px solid #eee;
+	margin		:0pt;
+	font-family	:monospace;
+	line-height	:1.6em;
+	position	:relative;
+	display		:flex;
+	padding-right:10ch;
+}
+.console .line::before{
+	content: ' ';
+	height	: 1.6em;
+	width	: 1ch;
+	display: inline-block;		
+}
+.console .line.error{
+	border-top		: 1px solid hsl(0deg 100% 85% / 1);
+	background-color: hsl(0deg 100% 95% / 1);
+}
+.console .line.error::before{
+	content	: '\0229D';
+	color	: red;
+}
+.console .line.warn{
+	border-top		: 1px solid hsl(45deg 100% 85% / 1);
+	background-color: hsl(45deg 100% 95% / 1);
+}
+.console .line.warn::before{
+	content	: '\025B3';
+	color	: orange;
+}
+.console .line.info{
+	border-top		: 1px solid hsl(240deg 100% 85% / 1);
+	background-color: hsl(240deg 100% 95% / 1);
+}
+.console .line.info::before{
+	content	: 'i';
+	color	: blue;
+}
+
+.console .line::after{
+	content: attr(title);
+	font-size: smaller;
+	color: gray;
+	position: absolute;
+	right: 0;
+}
+			
+.console .line .summary{
+	display:inline-block;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	vertical-align: top;
+}
+.console .line .summary.complex {
+	flex-grow: 0;
+	flex-shrink: 1;
+	display: inline-flex;
+	flex-wrap: nowrap;
+	overflow: hidden;
+}
+.console .line .summary.level0 {
+	margin-left: 1ch;
+}
+.console .line .summary.level0.complex::before {
+	content: '\025B8';
+	font-size: 1.6em;
+	vertical-align: middle;
+	line-height: 0.9em;
+	color: hsl(0 0% 30% / 1);
+}	
+
+.console .line .summary .properies{
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;   	
+}	
+.console .property{
+	margin-left:0.5ch;
+}
+.console .property > .name + .value{
+	margin-left:0.5ch;
+}
+
+.console .value > .array{
+	font-style: italic;
+}
+
+.console .value > .function{
+	--font-style: italic;
+	--font-size : 120%;
+	--color: BLUE;
+}
+
+
