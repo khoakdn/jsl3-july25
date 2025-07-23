@@ -117,6 +117,7 @@ a.download:hover {
 article{
 	-width:60%;
 	font-family: Segoe UI,Roboto,sans-serif;
+	width: 200rem;
 }
 
 .example-container{
@@ -516,7 +517,7 @@ section.example .jdoc {
 
 
 .aside{
-	width: 10rem;
+	width: 25rem;
 }
 
 .aside ul{
