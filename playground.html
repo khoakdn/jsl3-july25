@@ -146,6 +146,7 @@
 						jsl.forEach(root,(navtopic,name)=>
 							LI(
 								A(extractFnTitle(navtopic)||name,{
+									class:name==member?'active':'',
 									onclick(e){
 										'body > main'.jsl=makeTopicPage(root,name,true);
 									}
@@ -155,8 +156,10 @@
 									jsl.forEach(navtopic[jsd].defines,( subtopic, name )=>
 										LI(
 											A(extractFnTitle(subtopic)||name,{
+												class:jsl.sinkFor(subtopicselected,(source,m)=>(m==name)?'active':''),
 												onclick(e){
-													'article'.jsl.outer=makeTopicPage(navtopic[jsd].defines,name);
+													'article'.jsl.outer=makeTopicPage(navtopic[jsd].defines,name);											
+													subtopicselected(name);
 												}
 											}),
 										)
@@ -223,7 +226,7 @@
 								DIV({class:'splitter'}),		
 								DIV({class:'html-dom',},
 									DIV({class:'html tab'},
-									BUTTON(DIV({class:'left'},'▶'),DIV({class:'right'},'HTML'),{onclick(){example[sTabChanged]('html')}}),
+									BUTTON(DIV({class:'right'},'HTML'),{onclick(){example[sTabChanged]('html')}}),
 									DIV({class:'stage ready'},
 										DIV({class:'html view'},
 											((src,x)=>x).jsl.sinkFor(example.reset),

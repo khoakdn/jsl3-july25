@@ -224,10 +224,10 @@
 										)
 									)
 								),			
-								DIV({class:'resizer'}),		
+								// DIV({class:'resizer'}),		
 								DIV({class:'html-dom',},
 									DIV({class:'html tab'},
-									BUTTON({id:"htmlTabButton"},DIV({class:'left'},'▶'),DIV({class:'right'},'HTML'),{onclick(){example[sTabChanged]('html')}}),
+									BUTTON({id:"htmlTabButton"},DIV({class:'left'},'HTML'),{onclick(){example[sTabChanged]('html')}}),
 									DIV({class:'stage ready',},
 										DIV({class:'html view'},
 											((src,x)=>x).jsl.sinkFor(example.reset),
@@ -264,7 +264,7 @@
 								),
 								example[jsd].flags.nodom?'':
 								DIV({class:'dom tab hidden'},
-									BUTTON({id:"domTabButton"},DIV({class:'left'},''),DIV({class:'right'},'DOM'),{onclick(){example[sTabChanged]('dom')}}),
+									BUTTON({id:"domTabButton"},DIV({class:'right'},'DOM'),{onclick(){example[sTabChanged]('dom')}}),
 									DIV({class:'stage ready'},
 										DIV({class:'dom view'},
 											(function(src,root){//[title=sink for dom changed notification]
@@ -377,7 +377,7 @@
     });
 </script>
 
-<script>
+<!-- <script>
     document.addEventListener("DOMContentLoaded", function() {
         const resizer = document.querySelector(".resizer");
         const leftPane = document.querySelector(".source.tab");
@@ -419,7 +419,7 @@
             document.removeEventListener("mouseup", stopResize);
         }
     });
-</script>
+</script> -->
 
 
 	</head>

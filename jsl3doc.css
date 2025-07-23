@@ -197,7 +197,7 @@ article{
 }
 
 .example-container {
-    display: flex;
+    display: block;
 }
 
 .source.tab.selected,
@@ -458,7 +458,7 @@ section.example .jdoc {
 /* HTML-DOM */
 
 .html-dom {
-	display: flow;
+	display: flex;
 	align-items: stretch;
 }
 
@@ -516,7 +516,7 @@ section.example .jdoc {
 
 
 .aside{
-	width: 3;
+	width: 10rem;
 }
 
 .aside ul{
@@ -537,7 +537,7 @@ section.example .jdoc {
 }	
 
 
-.example-container {
+/* .example-container {
     display: flex;
     align-items: stretch;
     width: 100%;
@@ -548,9 +548,9 @@ section.example .jdoc {
     min-width: 20%;
     max-width: 80%;
     overflow: auto;
-}
+} */
 
-.resizer {
+/* .resizer {
     width: 5px;
     cursor: col-resize;
     transition: background 0.2s;
@@ -563,5 +563,5 @@ section.example .jdoc {
 .html-dom {
     flex: 1;
     overflow: auto;
-}
+} */
 
