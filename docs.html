@@ -159,7 +159,7 @@
 											A(extractFnTitle(subtopic)||name,{
 												class:jsl.sinkFor(subtopicselected,(source,m)=>(m==name)?'active':''),
 												onclick(e){
-													'article'.jsl.outer=makeTopicPage(navtopic[jsd].defines,name);											
+													'article'.jsl = makeTopicPage(navtopic[jsd].defines, name);											
 													subtopicselected(name);
 												}
 											}),
